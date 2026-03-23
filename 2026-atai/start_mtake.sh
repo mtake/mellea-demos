@@ -349,9 +349,15 @@ info "Starting Docker Compose services..."
 # We don't start langflow-vis yet because we need to set the langflow api key first
 if [ "$SKIP_CHROMADB" = true ]; then
     # Use --no-deps to skip chromadb dependency
-    docker compose up -d --no-deps langflow-intrinsics --scale langflow-vis=0
+    # @@@ahoaho XXX
+    # NOTE: podman doesn't support host-gateway
+    # docker compose up -d --no-deps langflow-intrinsics --scale langflow-vis=0
+    docker compose -f docker-compose_mtake.yml up -d --no-deps langflow-intrinsics --scale langflow-vis=0
 else
-    docker compose up -d --scale langflow-vis=0
+    # @@@ahoaho XXX
+    # NOTE: podman doesn't support host-gateway
+    # docker compose up -d --scale langflow-vis=0
+    docker compose -f docker-compose_mtake.yml up -d --scale langflow-vis=0
 fi
 
 echo ""
@@ -463,7 +469,10 @@ echo ""
 # Step 8: Start langflow-vis with the provisioned API key
 # =============================================================================
 info "Starting Langflow-Vis..."
-docker compose up -d --force-recreate langflow-vis
+# @@@ahoaho XXX
+# NOTE: podman doesn't support host-gateway
+# docker compose up -d --force-recreate langflow-vis
+docker compose -f docker-compose_mtake.yml up -d --force-recreate langflow-vis
 
 wait_for_service "Langflow-Vis" "http://localhost:8080" 120
 
